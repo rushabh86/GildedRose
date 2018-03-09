@@ -1,0 +1,54 @@
+I built the application using Spring boot & Swagger2 using gradle dependency management with gradle wrapper.
+one must be at the root level and execute the following command
+To Build:
+> gradlew build
+
+To run application:
+> gradlew bootRun
+
+This will start the spring boot run and bring up the service. By default the service will be up in port 8080.
+One can see the swagger document of the APIs of the service (and can also execute the API) using the following link:
+
+               http://localhost:8080/swagger-ui.html#/
+
+
+The Gilded Rose Inn Service has two APIs:
+GET /api/inventory :- Retrieves the full list of items present in the inn.
+POST /api/purchase/{itemName} :- Currently it checks if the item exist in inventory and returns the item with the
+current price (maybe surged based on surge pricing model)
+
+The Inventory data is currently stored in a csv file (under resource/Data.csv) but in future could be a connection to
+any storage layer.
+
+The Pricing Model:
+I decided to use a queue of timestamps to calculate the surge pricing model.
+My initial plan was to use a counter to see how many times get operation was called and if beyond a certain limit, we
+would return the surged price and have a background thread to execute every hour since last get which would reset the
+prices. When I realized this would work, but having two separate things (counter & bg task) to evaluate made me think of
+ another approach.
+In this approach instead of having a counter, i decided to use a queue where the size of the queue could mimic the
+counter, and instead of having a background task run and check for last time stamp, i can add timestamp to the queue and
+ check if the size if greater than threshold for surge and at each call, remove all old entries greater than an hour or
+ multiple entries. This way the queue is short and small and does what we need.
+
+Data format:
+Due to time constraint and simplicity, choose to keep the data on disk in a file and the simplest option was a text or a
+ csv file. Further more the API request and response are kept as JSON. The swagger docs provides all the necessary
+ details and documentation.
+
+ The first API:- /api/inventory does not require any values hence it can be executed directly.
+ for the second API:- /api/purchase/{itemName} one such example would be "mobile"
+ eg: "/api/purchase/mobile" and it would return the item with the price.
+
+Due to time constraint, I was unsuccessful in implementing the authentication for the user buying the item. I was
+planning to use OAuth with spring security.
+
+Additional Questions/ Future Scopes:
+Since the question did not say what happens when we buy an item, it was unclear as to what additional operation can be
+done. One thing is that we may surge the prices further since it is more in demand, or decrease quantity when we buy.
+As the Item class was given, I did not modify it for the question, but given a choice, I would make the item class a bit
+ richer, with quantity and other data (like is the item perishable) is it new or resold or does it affect price and so
+ on.
+
+Also would have various users, various roles and authorization check, where all can see the inventory, but some can see
+additional details, and/or some can buy and some can sell.. and/or buy in bulk etc.
