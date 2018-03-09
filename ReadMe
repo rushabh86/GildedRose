@@ -40,8 +40,10 @@ Due to time constraint and simplicity, choose to keep the data on disk in a file
  for the second API:- /api/purchase/{itemName} one such example would be "mobile"
  eg: "/api/purchase/mobile" and it would return the item with the price.
 
-Due to time constraint, I was unsuccessful in implementing the authentication for the user buying the item. I was
-planning to use OAuth with spring security.
+Due to time constraint:
+I was unsuccessful in implementing the authentication for the user buying the item. I was planning to use OAuth with spring security.
+Also was not able to add additional testing and was able to test the core pieces.
+
 
 Additional Questions/ Future Scopes:
 Since the question did not say what happens when we buy an item, it was unclear as to what additional operation can be
